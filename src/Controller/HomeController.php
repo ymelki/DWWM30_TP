@@ -16,6 +16,9 @@ class HomeController extends AbstractController
             "prenom"=>"Yoel",
             "age"=>35
         ];
+        
+        
+        //$this->addFlash("message","Bienvenue !Bienvenue !Bienvenue !Bienvenue !Bienvenue !Bienvenue !Bienvenue !Bienvenue !Bienvenue !Bienvenue !Bienvenue !Bienvenue !Bienvenue !Bienvenue ! ");
 
         // var_dump($tab_identite);
         return $this->render('home/index.html.twig', [

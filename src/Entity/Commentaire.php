@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CommentaireRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Assert\NotNull;
 
 #[ORM\Entity(repositoryClass: CommentaireRepository::class)]
 class Commentaire
@@ -20,9 +21,11 @@ class Commentaire
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'commentaires')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $users = null;
-
-    #[ORM\ManyToOne(inversedBy: 'commentaires')]
+    
+    #[ORM\ManyToOne(inversedBy: 'commentaires') ] 
+    #[ORM\JoinColumn(nullable: false)]
     private ?Produit $produits = null;
 
     public function getId(): ?int
