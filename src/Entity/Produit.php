@@ -24,6 +24,10 @@ class Produit
     #[ORM\OneToMany(mappedBy: 'produits', targetEntity: Commentaire::class)]
     private Collection $commentaires;
 
+    #[ORM\ManyToOne(inversedBy: 'produits')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Categorie $categories = null;
+
     public function __construct()
     {
         $this->commentaires = new ArrayCollection();
@@ -89,6 +93,18 @@ class Produit
                 $commentaire->setProduits(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCategories(): ?Categorie
+    {
+        return $this->categories;
+    }
+
+    public function setCategories(?Categorie $categories): self
+    {
+        $this->categories = $categories;
 
         return $this;
     }

@@ -11,6 +11,8 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
+        // $this->addFlash('success', 'La catégorie a bien été créée'); // message de succès (message flash)
+
         $tab_identite=[
             "nom"=>"Melki",
             "prenom"=>"Yoel",

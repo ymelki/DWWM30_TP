@@ -24,9 +24,13 @@ class Categorie
     #[ORM\OneToMany(mappedBy: 'categories', targetEntity: Aproduit::class)]
     private Collection $aproduits;
 
+    #[ORM\OneToMany(mappedBy: 'categories', targetEntity: Produit::class)]
+    private Collection $produits;
+
     public function __construct()
     {
         $this->aproduits = new ArrayCollection();
+        $this->produits = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -91,5 +95,35 @@ class Categorie
     public function __toString()
     {
         return $this->titre;
+    }
+
+    /**
+     * @return Collection<int, Produit>
+     */
+    public function getProduits(): Collection
+    {
+        return $this->produits;
+    }
+
+    public function addProduit(Produit $produit): self
+    {
+        if (!$this->produits->contains($produit)) {
+            $this->produits->add($produit);
+            $produit->setCategories($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduit(Produit $produit): self
+    {
+        if ($this->produits->removeElement($produit)) {
+            // set the owning side to null (unless already changed)
+            if ($produit->getCategories() === $this) {
+                $produit->setCategories(null);
+            }
+        }
+
+        return $this;
     }
 }

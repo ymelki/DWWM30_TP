@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AproduitcategorieController!{% endblock %}
+
+{% block body %}
+ 
+{% for unprod in produit_cat %}
+ <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>  {{unprod.id}}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>  {{unprod.titre}}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>  {{unprod.description}}</td>
+            </tr> 
+        </tbody>
+    </table>
+    
+{% endfor %}
+{% endblock %}
