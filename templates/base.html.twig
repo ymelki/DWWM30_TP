@@ -81,6 +81,27 @@
                 <li><a class="dropdown-item" href="{{ path('app_admin_commentaire_new') }}">Nouveau commentaire</a></li>
              </ul>
             </li>
+
+
+               <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="{{ path('app_admin_user_index') }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Gestion des Categorie
+            </a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ path('app_admin_categorie_index') }}">Voir les Categorie</a></li>
+                <li><a class="dropdown-item" href="{{ path('app_admin_categorie_new') }}">Nouvelle Categorie</a></li>
+             </ul>
+            </li>
+
+               <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="{{ path('app_admin_user_index') }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Gestion des Aproduit
+            </a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ path('app_admin_aproduit_index') }}">Voir les aproduit</a></li>
+                <li><a class="dropdown-item" href="{{ path('app_admin_aproduit_new') }}">Nouveau Aproduit</a></li>
+             </ul>
+            </li>
             {% endif %} 
         </ul> 
         </div>

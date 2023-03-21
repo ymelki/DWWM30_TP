@@ -49,8 +49,17 @@
     </table>
    
 {% endfor %}
-
- <h1>Ajouter un commenataire</h1>
-{{form(form)}}
+{% if is_granted('ROLE_USER') %}
+    <h1>Ajouter un commentaire</h1>
  
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn">
+        {{ button_label|default('Enregistrer le commentaire') }}
+        </button>
+    {{ form_end(form) }}
+
+
+{% endif %} 
+   
 {% endblock %}

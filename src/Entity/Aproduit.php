@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\CommentaireRepository;
+use App\Repository\AproduitRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Assert\NotNull;
 
-#[ORM\Entity(repositoryClass: CommentaireRepository::class)]
-class Commentaire
+#[ORM\Entity(repositoryClass: AproduitRepository::class)]
+class Aproduit
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -20,13 +19,8 @@ class Commentaire
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
-    #[ORM\ManyToOne(inversedBy: 'commentaires', fetch: 'EAGER')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $users = null;
-    
-    #[ORM\ManyToOne(inversedBy: 'commentaires') ] 
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Produit $produits = null;
+    #[ORM\ManyToOne(inversedBy: 'aproduits')]
+    private ?Categorie $categories = null;
 
     public function getId(): ?int
     {
@@ -57,26 +51,14 @@ class Commentaire
         return $this;
     }
 
-    public function getUsers(): ?User
+    public function getCategories(): ?Categorie
     {
-        return $this->users;
+        return $this->categories;
     }
 
-    public function setUsers(?User $users): self
+    public function setCategories(?Categorie $categories): self
     {
-        $this->users = $users;
-
-        return $this;
-    }
-
-    public function getProduits(): ?Produit
-    {
-        return $this->produits;
-    }
-
-    public function setProduits(?Produit $produits): self
-    {
-        $this->produits = $produits;
+        $this->categories = $categories;
 
         return $this;
     }
