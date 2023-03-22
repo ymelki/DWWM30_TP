@@ -28,6 +28,9 @@ class Produit
     #[ORM\JoinColumn(nullable: false)]
     private ?Categorie $categories = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imagename = null;
+
     public function __construct()
     {
         $this->commentaires = new ArrayCollection();
@@ -105,6 +108,18 @@ class Produit
     public function setCategories(?Categorie $categories): self
     {
         $this->categories = $categories;
+
+        return $this;
+    }
+
+    public function getImagename(): ?string
+    {
+        return $this->imagename;
+    }
+
+    public function setImagename(?string $imagename): self
+    {
+        $this->imagename = $imagename;
 
         return $this;
     }
