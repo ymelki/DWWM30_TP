@@ -30,16 +30,23 @@ class AdminProduitController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+ 
 
+            // on recupere l'image issue du formulaire
+            // "image" est le nom de notre image dans le form
             $imageproduit = $form->get('image')->getData();
             // dd($imageproduit);
             
+            // le cas ou l'image a été posté
             if ($imageproduit) {
+                // on utilise le service fileUploader
+                // pour envoyé l'image dans le public/img
                 $imageproduit_nom = $fileUploader->upload($imageproduit);
+                
+                // envoyé dans l'entité le nom de l'image
                 $produit->setImagename($imageproduit_nom);
             }
-
-
+            //stocké le nom de l'image dans la B.D.
             $produitRepository->save($produit, true);
 
             return $this->redirectToRoute('app_admin_produit_index', [], Response::HTTP_SEE_OTHER);
