@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\ContactType;
+use App\Service\EmailService;
 use Symfony\Component\Mime\Email;
  use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,7 +14,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ContactController extends AbstractController
 {
     #[Route('/contact', name: 'app_contact')]
-    public function index(MailerInterface $mailer, Request $request): Response
+    public function index(
+        EmailService $emailService,
+        Request $request): Response
     {
     $form=$this->createForm(ContactType::class);
         
@@ -33,18 +36,10 @@ class ContactController extends AbstractController
 
        // on va envoyé le mail
        // tester l'envoie de mail
-        $email = (new Email())
-        ->from($email_form)
-        ->to($email_form)
-        //->cc('cc@example.com')
-        //->bcc('bcc@example.com')
-        //->replyTo('fabien@example.com')
-        //->priority(Email::PRIORITY_HIGH)
-        ->subject('Time for Symfony Mailer!')
-        ->text($data['Votre_message'])
-        ->html($data['Votre_message']);
-
-        $mailer->send($email);
+       $emailService->envoyer(
+        $email_form,
+        $data['Votre_message']);
+         
 
 
 
