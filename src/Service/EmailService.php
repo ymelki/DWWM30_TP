@@ -31,6 +31,7 @@ class EmailService {
         ->html($message);
 
         $this->mailer->send($email);
+       
  
     }
 }

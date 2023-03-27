@@ -28,7 +28,7 @@ class DetailproduitController extends AbstractController
                     'produits'=>$produit
                 ]   
         );  
-        dd($commentaireparproduit) ;
+        // dd($commentaireparproduit) ;
          if ($form->isSubmitted() && $form->isValid()) {
 
 

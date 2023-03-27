@@ -3,16 +3,21 @@
 namespace App\Controller;
 
 use App\Form\JeuType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 
 class JeuController extends AbstractController
 {
     #[Route('/jeu', name: 'app_jeu')]
-    public function index(Request $request): Response
-    {
+    public function index(RequestStack $requestStack, Request $request): Response
+    { 
+        $requestStack->getSession()->get('identite');
+        $requestStack->getSession()->remove("unpanierdetest");
+        dd($requestStack->getSession()->get('unpanierdetest'));
+
         $form=$this->createForm(JeuType::class);
 
         // on prend l'objet form qui va lire la request
