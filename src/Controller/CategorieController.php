@@ -12,7 +12,7 @@ class CategorieController extends AbstractController
 {
     #[Route('/categorie', name: 'app_categorie')]
     public function index(
-        RequestStack $session,
+        RequestStack $requestStack,
         CategorieRepository $categorieRepository): Response
     {
         
@@ -20,7 +20,7 @@ class CategorieController extends AbstractController
         // $session->getSession()->remove("identite");
         // on test la récuperation pour l'afficher
         // avec un get
-        dd($session->getSession()->get("identite"));
+        dd($requestStack->getSession()->get("identite"));
 
         
         return $this->render('categorie/index.html.twig', [
