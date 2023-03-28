@@ -58,7 +58,6 @@ class CartController extends AbstractController
         
         return $this->render('cart/index.html.twig', [
             'panier' => $cartService->show(),
-            $cartService->show()
             
         ]);
     }
