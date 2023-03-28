@@ -8,29 +8,59 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
+
+/*
+
+Clé = Valeur
+[clé] = valeur
+
+[
+    [clé]=>[valeur]
+]
+/cart/add/7
+/cart/add/8
+/cart/add/8
+
+
+    [7]=>1
+    [8]=>2
+
+
+
+
+*/
+
 #[Route('/cart')]
 class CartController extends AbstractController
 {
-
-
-
-
-
-
     // page d'ajout de produit
     #[Route('/add/{id}', name: 'app_cart_add')]
     public function index
-    (Produit $produit,
+    ($id,
     RequestStack $session
     ): Response
     {
-        // cree ou modifier la variable session set
+         
 
-        // créé mon panier
-        $session->getSession()->set("panier",[]);
+        // créé mon panier à vide si il n'existe pas 
+        // le 2 parametre []
+        // si il existe deja je recupere l'existant
 
-        dd($produit);
-        return $this->render('cart/index.html.twig', [
+        $panier=$session->getSession()->get("panier",[]);
+        // dans le tableau de mon panier j'ai
+        ///cart/add/7
+        // $panier[7] je lui rajoute 1 dans sa veleur
+        $panier[7]++   ;
+
+        // ici on modifie à chaque passage la variable panier
+        // au niveau de la session
+        // [7]=>1
+        $session->getSession()->set("panier",$panier);
+
+        dd($panier);
+
+         return $this->render('cart/index.html.twig', [
             'controller_name' => 'CartController',
         ]);
     }
