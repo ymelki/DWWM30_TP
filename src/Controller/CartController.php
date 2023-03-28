@@ -3,11 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Produit;
+use App\Service\CartService;
 use App\Repository\ProduitRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 
@@ -39,31 +40,10 @@ class CartController extends AbstractController
     #[Route('/add/{id}', name: 'app_cart_add')]
     public function index
     ($id,
-    RequestStack $session
+    CartService $cartService
     ):  Response
     {      
-        // créé mon panier à vide si il n'existe pas 
-        // le 2 parametre []
-        // si il existe deja je recupere l'existant
-
-        $panier=$session->getSession()->get("panier",[]);
-
-        // dans le cas ou la clé n'a jamais été alimenté
-        // on a beoin de la créé avec une valeur
-        if (empty($panier[$id])){
-            // si le $panier[7] n'existe pas à la met à 0.
-            $panier[$id]=0;
-        }
-        // dans le tableau de mon panier j'ai
-        ///cart/add/7
-        // $panier[7] je lui rajoute 1 dans sa veleur
-        $panier[$id]++;
-
-        // ici on modifie à chaque passage la variable panier
-        // au niveau de la session
-        // [7]=>1
-        $session->getSession()->set("panier",$panier);
-
+        $cartService->add($id);
         // redirection vers la page des produits
          return $this->redirectToRoute("app_produit_index",[], Response::HTTP_SEE_OTHER);
 
@@ -72,56 +52,27 @@ class CartController extends AbstractController
     // page pour visualiser notre panier
     #[Route('/show', name: 'app_cart_show')]
     public function show(
-        ProduitRepository $produitRepository,
-        RequestStack $session): Response
+      CartService $cartService
+        ): Response
     {
-        //get pour recuperer la session
-        // dd($session->getSession()->get("panier"));
-        $panier=$session->getSession()->get("panier");
-
-        // créé un panier contenant les infos sur le produits
-
-        $panier_complet=[];
-
-        // je boucle sur la cle et la valeur
-        // du panier
-        // clé de 7 sa valeur est la quantité
-        $total=0;
-        foreach ($panier as $key => $value  ){
-            $produit_encours= $produitRepository->find($key);
-
-            $panier_complet[]=[
-                'produit'=> $produitRepository->find($key) ,
-                'quantite'=>$value,
-                'total'=>($produit_encours->getPrix()*$value),
-                ];
-                // accumule la variable total avec chacun des prix
-            $total=$total+($produit_encours->getPrix()*$value);
-            
-
-
-        }
-        //dd($panier_complet);
-
-
-
-
+        
         return $this->render('cart/index.html.twig', [
-            'panier' => $panier_complet,
-            'total' =>$total
+            'panier' => $cartService->show(),
+            $cartService->show()
+            
         ]);
     }
 
     // page pour vider notre panier
     #[Route('/clear', name: 'app_cart_clear')]
-    public function clear(RequestStack $session): Response
+    public function clear(
+        CartService $cartService
+    ): Response
     {
-        // remove pour vider la session
-        $session->getSession()->remove("panier");
+        $cartService->clear();
+        
+        // redirection vers la page des produits
+        return $this->redirectToRoute("app_produit_index",[], Response::HTTP_SEE_OTHER);
 
-
-        return $this->render('cart/index.html.twig', [
-            'controller_name' => 'CartController',
-        ]);
     }
 }
