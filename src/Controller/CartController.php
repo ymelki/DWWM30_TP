@@ -48,10 +48,17 @@ class CartController extends AbstractController
         // si il existe deja je recupere l'existant
 
         $panier=$session->getSession()->get("panier",[]);
+
+        // dans le cas ou la clé n'a jamais été alimenté
+        // on a beoin de la créé avec une valeur
+        if (empty($panier[$id])){
+            // si le $panier[7] n'existe pas à la met à 0.
+            $panier[$id]=0;
+        }
         // dans le tableau de mon panier j'ai
         ///cart/add/7
         // $panier[7] je lui rajoute 1 dans sa veleur
-        $panier[7]++   ;
+        $panier[$id]++;
 
         // ici on modifie à chaque passage la variable panier
         // au niveau de la session
