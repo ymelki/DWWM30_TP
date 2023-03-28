@@ -86,11 +86,18 @@ class CartController extends AbstractController
         // je boucle sur la cle et la valeur
         // du panier
         // clé de 7 sa valeur est la quantité
+        $total=0;
         foreach ($panier as $key => $value  ){
+            $produit_encours= $produitRepository->find($key);
+
             $panier_complet[]=[
                 'produit'=> $produitRepository->find($key) ,
-                'quantite'=>$value
-            ];
+                'quantite'=>$value,
+                'total'=>($produit_encours->getPrix()*$value),
+                ];
+                // accumule la variable total avec chacun des prix
+            $total=$total+($produit_encours->getPrix()*$value);
+            
 
 
         }
@@ -101,6 +108,7 @@ class CartController extends AbstractController
 
         return $this->render('cart/index.html.twig', [
             'panier' => $panier_complet,
+            'total' =>$total
         ]);
     }
 

@@ -20,15 +20,14 @@
         </thead>
         <tbody>
             {% for monpanier in panier %}
-              {{ dump(monpanier)}}
             <tr>
                 <td>{{monpanier.produit.id}}</td>
                 <td><img src="{{ asset('img/') ~monpanier.produit.imagename}}" class="w-25" ></td>
                 <td>{{monpanier.produit.titre}}</td>
                 <td>{{monpanier.produit.description}}</td>
-                <td></td>
+                <td>{{monpanier.produit.prix}} €</td>
                 <td>{{monpanier.quantite}}</td>
-                <td></td>
+                <td>{{monpanier.total}} €</td>
             </tr>
         {% else %}
             <tr>
@@ -37,6 +36,8 @@
         {% endfor %}
         </tbody>
     </table>
+
+    <h2>Montant Total : {{total}} </h2>
 
 
 {% endblock %}
