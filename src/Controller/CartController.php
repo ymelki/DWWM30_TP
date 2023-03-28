@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Produit;
+use App\Repository\ProduitRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,14 +71,36 @@ class CartController extends AbstractController
 
     // page pour visualiser notre panier
     #[Route('/show', name: 'app_cart_show')]
-    public function show(RequestStack $session): Response
+    public function show(
+        ProduitRepository $produitRepository,
+        RequestStack $session): Response
     {
         //get pour recuperer la session
         // dd($session->getSession()->get("panier"));
         $panier=$session->getSession()->get("panier");
 
+        // créé un panier contenant les infos sur le produits
+
+        $panier_complet=[];
+
+        // je boucle sur la cle et la valeur
+        // du panier
+        // clé de 7 sa valeur est la quantité
+        foreach ($panier as $key => $value  ){
+            $panier_complet[]=[
+                'produit'=> $produitRepository->find($key) ,
+                'quantite'=>$value
+            ];
+
+
+        }
+        //dd($panier_complet);
+
+
+
+
         return $this->render('cart/index.html.twig', [
-            'panier' => $panier,
+            'panier' => $panier_complet,
         ]);
     }
 

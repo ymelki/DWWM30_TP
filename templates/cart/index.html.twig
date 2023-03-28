@@ -19,14 +19,15 @@
             </tr>
         </thead>
         <tbody>
-            {% for key, value in panier %}
+            {% for monpanier in panier %}
+              {{ dump(monpanier)}}
             <tr>
-                <td>{{ key }}</td>
+                <td>{{monpanier.produit.id}}</td>
+                <td><img src="{{ asset('img/') ~monpanier.produit.imagename}}" class="w-25" ></td>
+                <td>{{monpanier.produit.titre}}</td>
+                <td>{{monpanier.produit.description}}</td>
                 <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>{{ value }}</td>
+                <td>{{monpanier.quantite}}</td>
                 <td></td>
             </tr>
         {% else %}
