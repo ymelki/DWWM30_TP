@@ -39,10 +39,8 @@ class CartController extends AbstractController
     public function index
     ($id,
     RequestStack $session
-    ): Response
-    {
-         
-
+    ):  Response
+    {      
         // créé mon panier à vide si il n'existe pas 
         // le 2 parametre []
         // si il existe deja je recupere l'existant
@@ -65,11 +63,9 @@ class CartController extends AbstractController
         // [7]=>1
         $session->getSession()->set("panier",$panier);
 
-        dd($panier);
+        // redirection vers la page des produits
+         return $this->redirectToRoute("app_produit_index",[], Response::HTTP_SEE_OTHER);
 
-         return $this->render('cart/index.html.twig', [
-            'controller_name' => 'CartController',
-        ]);
     }
 
     // page pour visualiser notre panier
@@ -77,11 +73,11 @@ class CartController extends AbstractController
     public function show(RequestStack $session): Response
     {
         //get pour recuperer la session
-        dd($session->getSession()->get("panier"));
-
+        // dd($session->getSession()->get("panier"));
+        $panier=$session->getSession()->get("panier");
 
         return $this->render('cart/index.html.twig', [
-            'controller_name' => 'CartController',
+            'panier' => $panier,
         ]);
     }
 

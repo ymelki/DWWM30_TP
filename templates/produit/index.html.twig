@@ -23,7 +23,9 @@
                     <p class="card-text">{{ produit.description }}
                     
                     </p>
+                    <a href="{{ path('app_cart_add', {'id': produit.id}) }}">
                     <button type="button" class="btn btn-primary">Ajouter au panier</button>
+                    </a>
                     <a href="{{ path('app_detailproduit', {'id': produit.id}) }}">
                       <button type="button" class="btn btn-primary">Detail</button>
                     </a>
