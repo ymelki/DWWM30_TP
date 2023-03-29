@@ -63,7 +63,7 @@ class DetailproduitController extends AbstractController
          return $this->renderForm('detailproduit/index.html.twig', [
             'produit' => $produit,
             'les_commentaires' => $commentaireparproduit,
-            'form' => $form
+                
          ]);
     }
 }

@@ -16,6 +16,7 @@
                 <th>prix</th>
                 <th>Quantite</th>
                 <th>Total</th>
+                <th>Supprimer</th>                
             </tr>
         </thead>
         <tbody>
@@ -26,9 +27,23 @@
                 <td>{{monpanier.produit.titre}}</td>
                 <td>{{monpanier.produit.description}}</td>
                 <td>{{monpanier.produit.prix}} €</td>
-                <td>{{monpanier.quantite}}</td>
+                <td>
+                
+                 <a href="{{ path('app_cart_add', {'id': monpanier.produit.id}) }}">
+                +
+                </a> 
+                {{monpanier.quantite}}
+                 <a href="{{ path('app_cart_removequantite', {'id': monpanier.produit.id}) }}">
+                -
+                </a> 
+                
+                </td>
                 <td>{{monpanier.total}} €</td>
-            </tr>
+                 <td>
+                                     <a href="{{ path('app_cart_remove', {'id': monpanier.produit.id}) }}">
+                                     Supprimer</a>
+                    </td>
+           </tr>
         {% else %}
             <tr>
                 <td colspan="4">no records found</td>
@@ -38,7 +53,10 @@
     </table>
 
 
-    <h2>Montant Total :      € </h2>
+    <h2>Montant Total :  {{ totalcomplet }}    € </h2>
+    <a href="{{ path('app_commande')}}">
+    <h2>COMMANDEZ</h2>
+    </a>
 
         <a href="{{ path('app_cart_clear') }}">
         Vider le panier

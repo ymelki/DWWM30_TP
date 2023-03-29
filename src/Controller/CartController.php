@@ -45,7 +45,7 @@ class CartController extends AbstractController
     {      
         $cartService->add($id);
         // redirection vers la page des produits
-         return $this->redirectToRoute("app_produit_index",[], Response::HTTP_SEE_OTHER);
+         return $this->redirectToRoute("app_cart_show",[], Response::HTTP_SEE_OTHER);
 
     }
 
@@ -58,7 +58,7 @@ class CartController extends AbstractController
         
         return $this->render('cart/index.html.twig', [
             'panier' => $cartService->show(),
-            
+            'totalcomplet'=> $cartService->getTotalAll()
         ]);
     }
 
@@ -74,4 +74,36 @@ class CartController extends AbstractController
         return $this->redirectToRoute("app_produit_index",[], Response::HTTP_SEE_OTHER);
 
     }
+
+       // page pour vider notre panier
+       #[Route('/remove/{id}', name: 'app_cart_remove')]
+       public function remove_all(
+            $id,
+           CartService $cartService
+       ): Response
+       {
+            // supprimer la clé du tableau (le produit)
+           $cartService->remove_all($id);
+           
+           // redirection vers la page des produits
+           return $this->redirectToRoute("app_cart_show",[], Response::HTTP_SEE_OTHER);
+   
+       }
+
+
+// page pour vider notre panier
+#[Route('/removequantite/{id}', name: 'app_cart_removequantite')]
+public function removequantite(
+     $id,
+    CartService $cartService
+): Response
+{
+     // supprimer la clé du tableau (le produit)
+    $cartService->remove($id);
+    
+    // redirection vers la page des produits
+    return $this->redirectToRoute("app_cart_show",[], Response::HTTP_SEE_OTHER);
+
+}
+
 }
