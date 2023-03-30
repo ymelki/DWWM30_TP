@@ -71,7 +71,7 @@ class CommandeController extends AbstractController
             'cancel_url' => $YOUR_DOMAIN . '/cancel.html',
           ]);
 
-          dd($checkout_session);
+          
 
 
           
@@ -82,6 +82,7 @@ class CommandeController extends AbstractController
         
         return $this->render('commande/index.html.twig', [
             'controller_name' => 'CommandeController',
+            'id_session'=>$checkout_session->id
         ]);
     }
 }
