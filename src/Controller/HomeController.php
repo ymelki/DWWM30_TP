@@ -15,6 +15,8 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(RequestStack $requestStack  ): Response
     {
+        //$this->addFlash("success", "Pas mal !");
+
         // on créé un tableau identité avec 3 cases 
         // nom et prenom et age.
          $tab_identite=[

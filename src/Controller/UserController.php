@@ -4,22 +4,33 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\User1Type;
+use App\Repository\FactureRepository;
 use App\Repository\UserRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/user')]
+#[Route('/profile/user')]
 class UserController extends AbstractController
 {
     #[Route('/', name: 'app_user_index', methods: ['GET'])]
-    public function index(): Response
-    {
-        
+    public function index(
+        FactureRepository $factureRepository
+    ): Response
+    {        
+        // recuperation du user en cours
         $monuser=$this->getUser();
+
+        // recuperation des factures selon le user en cours
+        $facture_user=$factureRepository->findBy([
+            'users'=>$monuser
+        ]);
+ 
+
         return $this->render('user/index.html.twig', [
             'user' => $monuser,
+            'factures'=> $facture_user
         ]);
     }
 

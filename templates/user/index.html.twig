@@ -26,11 +26,33 @@
                 <td>
                     <a href="{{ path('app_user_edit') }}">edit</a>
                 </td>
-            </tr>
-            <tr>
-                <td colspan="7">no records found</td>
-            </tr>
+            </tr> 
         </tbody>
     </table>
+Voir mes commandes
 
+ <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date</th> 
+            </tr>
+        </thead>
+        <tbody>
+        {% for unefacture in factures %}
+            <tr> 
+                <td>               
+                <a href="{{ path('app_commandes_index', {'id': unefacture.id}) }}">
+                {{ unefacture.id }}
+                </a></td>
+                <td> </td>
+            </tr> 
+             {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
 {% endblock %}

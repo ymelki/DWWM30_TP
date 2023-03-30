@@ -21,8 +21,75 @@ class CommandeController extends AbstractController
 {
 
     #[Route('/profile/commande/success', name: 'app_commande_sucess')]
-    public function sucess(){
-        dd('le paiement est OK ! ');
+    public function sucess(
+        FactureRepository $factureRepository,
+        RequestStack $session,
+        ProduitRepository $produitRepository,
+        CommandesRepository $commandesRepository,
+        CartService $cartService
+    ):Response
+    {
+
+
+        
+        // 1. On va stocké une ligne dans la table facture
+        // on créé un objet facture issue de l'entité facture
+        $facture=new Facture();
+        // on va lui affecté un user en lui mettant l'user en cours
+        $facture->setUsers($this->getUser());
+        // on va lui affecté la propriété correspondant à la date en cours
+        // avec un datatime
+        $facture->setDatecrea(new DateTime());
+
+
+
+        // on utilise le repo de la facture pour enregistrer
+        // les repository des entity de servent qu'a lire (méthode find)
+        // il y a une personnalisation du repo qui appelle l'entity manager
+        // c'est la classe d'écriture de symfony
+        $factureRepository->save($facture, true);
+
+
+
+
+        // 2. on va stocké le panier dans la table commande
+    /*    $panier=$session->getSession()->get("panier");
+
+        // boucler sur chaque ligne du panier
+        foreach ($panier as $key => $value  ){ 
+            
+            $commande = new Commande();
+            $commande->setUsers($this->getUser());
+            $commande->setProduits($produitRepository->find($key));
+            $commande->setQuantite($value);
+            $commandeRepository->save($commande, true);
+
+        }*/
+        $panier=$session->getSession()->get("panier");
+
+        foreach($panier as $key => $value){
+
+            // création d'un objet commande
+            $commandes=new Commandes();
+            // affectation de la propriété quantité issue du tableau panier
+            $commandes->setQuantite($value);
+            // affectation de la propriété produit
+            // grace au repo du produit
+            $commandes->setProduit($produitRepository->find($key));
+            // affectation de la propriété facture issue du 
+            // de la facture créé au dessus
+            $commandes->setFactures($facture);
+            $commandesRepository->save($commandes,true);
+        }
+
+        
+
+        // on vide le panier
+        $cartService->clear();
+ 
+        return $this->render(
+            "commande/success.html.twig"
+        );
     } 
 
 
@@ -76,59 +143,7 @@ class CommandeController extends AbstractController
         $montant=$cart->getTotalAll()*100;
 
 
-        // 1. On va stocké une ligne dans la table facture
-        // on créé un objet facture issue de l'entité facture
-        $facture=new Facture();
-        // on va lui affecté un user en lui mettant l'user en cours
-        $facture->setUsers($this->getUser());
-        // on va lui affecté la propriété correspondant à la date en cours
-        // avec un datatime
-        $facture->setDatecrea(new DateTime());
-
-
-
-        // on utilise le repo de la facture pour enregistrer
-        // les repository des entity de servent qu'a lire (méthode find)
-        // il y a une personnalisation du repo qui appelle l'entity manager
-        // c'est la classe d'écriture de symfony
-        $factureRepository->save($facture, true);
-
-
-
-
-        // 2. on va stocké le panier dans la table commande
-    /*    $panier=$session->getSession()->get("panier");
-
-        // boucler sur chaque ligne du panier
-        foreach ($panier as $key => $value  ){ 
-            
-            $commande = new Commande();
-            $commande->setUsers($this->getUser());
-            $commande->setProduits($produitRepository->find($key));
-            $commande->setQuantite($value);
-            $commandeRepository->save($commande, true);
-
-        }*/
-        $panier=$session->getSession()->get("panier");
-
-        foreach($panier as $key => $value){
-
-            // création d'un objet commande
-            $commandes=new Commandes();
-            // affectation de la propriété quantité issue du tableau panier
-            $commandes->setQuantite($value);
-            // affectation de la propriété produit
-            // grace au repo du produit
-            $commandes->setProduit($produitRepository->find($key));
-            // affectation de la propriété facture issue du 
-            // de la facture créé au dessus
-            $commandes->setFactures($facture);
-            $commandesRepository->save($commandes,true);
-        }
-
-
-
-        dd("stop ! ");
+        
 
         // clé secrete pour que stripe me reconnaisse
         $stripeSecretKey="sk_test_51KqHUhHxTuewjfx8W4mdPLu0MLeDPM0uBpINTS0lv1lxUEkSOfK7UXbvOK8WtTFUNau0cB4hKVk4FPTMfmSSZZZh00vo9JBk6o";
@@ -137,10 +152,11 @@ class CommandeController extends AbstractController
         // on définit le protocol de connexion http ou https
         // avec les variable global PHP de sorte de pouvoir gérer
         // tout les environnements possible
-        $protocol="http://";
+
         if (isset($_SERVER['HTTPS'])){
             $protocol="https://";
-        }
+        } 
+        $protocol="http://";
         // on définit le nom du serveur de connexion 
         // avec les variable global PHP de sorte de pouvoir gérer
         // tout les environnements possible

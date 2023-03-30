@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commandes index{% endblock %}
+
+{% block body %}
+    <h1>Commandes index</h1>
+{{dump(commandes)}}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom du produit</th>
+                <th>Prix</th>
+                <th>Quantite</th>
+                <th>Total</th>
+             </tr>
+        </thead>
+        <tbody>
+        {% for commande in commandes %}
+            <tr>
+                <td>{{ commande.id }}</td>
+                <td>{{ commande.nom_produit }}</td>
+                 <td>{{  commande.produit_prix }}</td>
+                <td>{{ commande.quantite }}</td>
+                <td>{{ commande.total }}</td>
+ 
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+Total de la commande : {{ total_commande }}
+ {% endblock %}
