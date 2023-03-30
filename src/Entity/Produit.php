@@ -35,14 +35,15 @@ class Produit
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $prix = null;
 
-    #[ORM\OneToMany(mappedBy: 'produits', targetEntity: Commande::class)]
+    #[ORM\OneToMany(mappedBy: 'produit', targetEntity: Commandes::class)]
     private Collection $commandes;
 
+    
     public function __construct()
     {
         $this->commentaires = new ArrayCollection();
         $this->commandes = new ArrayCollection();
-    }
+     }
 
     public function getId(): ?int
     {
@@ -145,32 +146,33 @@ class Produit
     }
 
     /**
-     * @return Collection<int, Commande>
+     * @return Collection<int, Commandes>
      */
     public function getCommandes(): Collection
     {
         return $this->commandes;
     }
 
-    public function addCommande(Commande $commande): self
+    public function addCommande(Commandes $commande): self
     {
         if (!$this->commandes->contains($commande)) {
             $this->commandes->add($commande);
-            $commande->setProduits($this);
+            $commande->setProduit($this);
         }
 
         return $this;
     }
 
-    public function removeCommande(Commande $commande): self
+    public function removeCommande(Commandes $commande): self
     {
         if ($this->commandes->removeElement($commande)) {
             // set the owning side to null (unless already changed)
-            if ($commande->getProduits() === $this) {
-                $commande->setProduits(null);
+            if ($commande->getProduit() === $this) {
+                $commande->setProduit(null);
             }
         }
 
         return $this;
     }
+   
 }

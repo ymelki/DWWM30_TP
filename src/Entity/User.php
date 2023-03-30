@@ -41,13 +41,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
-    #[ORM\OneToMany(mappedBy: 'users', targetEntity: Commande::class)]
-    private Collection $commandes;
-
+    #[ORM\OneToMany(mappedBy: 'users', targetEntity: Facture::class)]
+    private Collection $factures;
+ 
     public function __construct()
     {
         $this->commentaires = new ArrayCollection();
-        $this->commandes = new ArrayCollection();
+        $this->factures = new ArrayCollection(); 
     }
 
     public function getId(): ?int
@@ -199,32 +199,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Commande>
+     * @return Collection<int, Facture>
      */
-    public function getCommandes(): Collection
+    public function getFactures(): Collection
     {
-        return $this->commandes;
+        return $this->factures;
     }
 
-    public function addCommande(Commande $commande): self
+    public function addFacture(Facture $facture): self
     {
-        if (!$this->commandes->contains($commande)) {
-            $this->commandes->add($commande);
-            $commande->setUsers($this);
+        if (!$this->factures->contains($facture)) {
+            $this->factures->add($facture);
+            $facture->setUsers($this);
         }
 
         return $this;
     }
 
-    public function removeCommande(Commande $commande): self
+    public function removeFacture(Facture $facture): self
     {
-        if ($this->commandes->removeElement($commande)) {
+        if ($this->factures->removeElement($facture)) {
             // set the owning side to null (unless already changed)
-            if ($commande->getUsers() === $this) {
-                $commande->setUsers(null);
+            if ($facture->getUsers() === $this) {
+                $facture->setUsers(null);
             }
         }
 
         return $this;
     }
+
+    
+     
 }

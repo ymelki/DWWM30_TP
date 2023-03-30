@@ -2,13 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\Commandes;
+use App\Entity\Facture;
+use App\Repository\CommandesRepository;
+use App\Repository\FactureRepository;
 use Stripe\Stripe;
-use App\Entity\Commande;
 use Stripe\PaymentIntent;
 use Stripe\Checkout\Session;
-use App\Repository\ProduitRepository;
-use App\Repository\CommandeRepository;
+use App\Repository\ProduitRepository; 
 use App\Service\CartService;
+use DateTime;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -30,10 +33,14 @@ class CommandeController extends AbstractController
 
     #[Route('/profile/commande', name: 'app_commande')]
     public function index(
-        CommandeRepository $commandeRepository,
+     //   CommandeRepository $commandeRepository,
         RequestStack $session,
         ProduitRepository $produitRepository,
-        CartService $cart
+
+        CartService $cart,
+        FactureRepository $factureRepository,
+
+        CommandesRepository $commandesRepository
 
 
     ): Response
@@ -68,11 +75,75 @@ class CommandeController extends AbstractController
         // on a le montant du panier
         $montant=$cart->getTotalAll()*100;
 
+
+        // 1. On va stocké une ligne dans la table facture
+        // on créé un objet facture issue de l'entité facture
+        $facture=new Facture();
+        // on va lui affecté un user en lui mettant l'user en cours
+        $facture->setUsers($this->getUser());
+        // on va lui affecté la propriété correspondant à la date en cours
+        // avec un datatime
+        $facture->setDatecrea(new DateTime());
+
+
+
+        // on utilise le repo de la facture pour enregistrer
+        // les repository des entity de servent qu'a lire (méthode find)
+        // il y a une personnalisation du repo qui appelle l'entity manager
+        // c'est la classe d'écriture de symfony
+        $factureRepository->save($facture, true);
+
+
+
+
+        // 2. on va stocké le panier dans la table commande
+    /*    $panier=$session->getSession()->get("panier");
+
+        // boucler sur chaque ligne du panier
+        foreach ($panier as $key => $value  ){ 
+            
+            $commande = new Commande();
+            $commande->setUsers($this->getUser());
+            $commande->setProduits($produitRepository->find($key));
+            $commande->setQuantite($value);
+            $commandeRepository->save($commande, true);
+
+        }*/
+        $panier=$session->getSession()->get("panier");
+
+        foreach($panier as $key => $value){
+
+            // création d'un objet commande
+            $commandes=new Commandes();
+            // affectation de la propriété quantité issue du tableau panier
+            $commandes->setQuantite($value);
+            // affectation de la propriété produit
+            // grace au repo du produit
+            $commandes->setProduit($produitRepository->find($key));
+            // affectation de la propriété facture issue du 
+            // de la facture créé au dessus
+            $commandes->setFactures($facture);
+            $commandesRepository->save($commandes,true);
+        }
+
+
+
+        dd("stop ! ");
+
         // clé secrete pour que stripe me reconnaisse
         $stripeSecretKey="sk_test_51KqHUhHxTuewjfx8W4mdPLu0MLeDPM0uBpINTS0lv1lxUEkSOfK7UXbvOK8WtTFUNau0cB4hKVk4FPTMfmSSZZZh00vo9JBk6o";
         Stripe::setApiKey($stripeSecretKey);
   
+        // on définit le protocol de connexion http ou https
+        // avec les variable global PHP de sorte de pouvoir gérer
+        // tout les environnements possible
         $protocol="http://";
+        if (isset($_SERVER['HTTPS'])){
+            $protocol="https://";
+        }
+        // on définit le nom du serveur de connexion 
+        // avec les variable global PHP de sorte de pouvoir gérer
+        // tout les environnements possible
         $serveur=$_SERVER['SERVER_NAME'];
         $YOUR_DOMAIN=$protocol.$serveur;
 
