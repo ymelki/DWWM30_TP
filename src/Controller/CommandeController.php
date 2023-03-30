@@ -71,26 +71,33 @@ class CommandeController extends AbstractController
         // clé secrete pour que stripe me reconnaisse
         $stripeSecretKey="sk_test_51KqHUhHxTuewjfx8W4mdPLu0MLeDPM0uBpINTS0lv1lxUEkSOfK7UXbvOK8WtTFUNau0cB4hKVk4FPTMfmSSZZZh00vo9JBk6o";
         Stripe::setApiKey($stripeSecretKey);
-
-        $YOUR_DOMAIN="http://127.0.0.1:8000";
+  
+        $protocol="http://";
+        $serveur=$_SERVER['SERVER_NAME'];
+        $YOUR_DOMAIN=$protocol.$serveur;
 
         // on lance la communication avec stripe
-        $checkout_session = Session::create([
+
+
+
+        $checkout_session = \Stripe\Checkout\Session::create([
             'line_items' => [[
               # Provide the exact Price ID (e.g. pr_1234) of the product you want to sell
-              'amount' => $montant,
+              'price_data' => [
+                'currency' => 'eur',
+                'unit_amount' => $montant,
+                'product_data' => [
+                  'name' => 'Paiement de votre panier'
+                ],
+              ],
               'quantity' => 1,
-              'currency'=>'eur',
-              'name'=>'test'
             ]],
             'mode' => 'payment',
             'success_url' => $YOUR_DOMAIN . '/profile/commande/success',
             'cancel_url' => $YOUR_DOMAIN . '/profile/commande/cancel',
-          ]);
 
-          
-
-
+        ]);
+ 
           
         //2. Savegarde en B.D.
 
