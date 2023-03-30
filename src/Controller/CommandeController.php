@@ -8,6 +8,7 @@ use Stripe\PaymentIntent;
 use Stripe\Checkout\Session;
 use App\Repository\ProduitRepository;
 use App\Repository\CommandeRepository;
+use App\Service\CartService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -15,11 +16,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CommandeController extends AbstractController
 {
+
+    #[Route('/profile/commande/success', name: 'app_commande_sucess')]
+    public function sucess(){
+        dd('le paiement est OK ! ');
+    } 
+
+
+    #[Route('/profile/commande/cancel', name: 'app_commande_cancel')]
+    public function cancel(){
+        dd('le paiement est KO ! ');
+    } 
+
     #[Route('/profile/commande', name: 'app_commande')]
     public function index(
         CommandeRepository $commandeRepository,
         RequestStack $session,
-        ProduitRepository $produitRepository
+        ProduitRepository $produitRepository,
+        CartService $cart
 
 
     ): Response
@@ -51,6 +65,9 @@ class CommandeController extends AbstractController
         //1. Payer sur STRIPE
         // communiquer avec stripe
 
+        // on a le montant du panier
+        $montant=$cart->getTotalAll()*100;
+
         // clé secrete pour que stripe me reconnaisse
         $stripeSecretKey="sk_test_51KqHUhHxTuewjfx8W4mdPLu0MLeDPM0uBpINTS0lv1lxUEkSOfK7UXbvOK8WtTFUNau0cB4hKVk4FPTMfmSSZZZh00vo9JBk6o";
         Stripe::setApiKey($stripeSecretKey);
@@ -61,14 +78,14 @@ class CommandeController extends AbstractController
         $checkout_session = Session::create([
             'line_items' => [[
               # Provide the exact Price ID (e.g. pr_1234) of the product you want to sell
-              'amount' => '10000',
+              'amount' => $montant,
               'quantity' => 1,
               'currency'=>'eur',
               'name'=>'test'
             ]],
             'mode' => 'payment',
-            'success_url' => $YOUR_DOMAIN . '/success.html',
-            'cancel_url' => $YOUR_DOMAIN . '/cancel.html',
+            'success_url' => $YOUR_DOMAIN . '/profile/commande/success',
+            'cancel_url' => $YOUR_DOMAIN . '/profile/commande/cancel',
           ]);
 
           
